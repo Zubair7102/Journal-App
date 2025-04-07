@@ -9,7 +9,7 @@ import java.util.Map;
 
 /* Controllers are special type of classes or components that handle http requests */
 @RestController /* @RestController: This tells Spring Boot that this class will handle HTTP requests and return data in JSON format. */
-@RequestMapping("/journal")
+@RequestMapping("/_journal")
 public class JournalEntryController {
 
     private Map<Long, JournalEntry> journalEntries = new HashMap<>(); 

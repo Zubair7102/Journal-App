@@ -1,7 +1,13 @@
 package com.tothenew.journalApp.entity;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+/* @Document annotation is used in Spring Data MongoDB to tell Spring that a class should be stored as a MongoDB document */
+@Document
 public class JournalEntry {
-    private long id;
+    @Id
+    private String id;
 
     private String title;
 
@@ -18,7 +24,7 @@ public class JournalEntry {
     }
 
 //    Id getter
-    public long getId() {
+    public String getId() {
         return id;
     }
 
@@ -35,7 +41,7 @@ public class JournalEntry {
     }
 
 //    Id setter
-    public void setId(long id)
+    public void setId(String id)
     {
         this.id = id;
     }
