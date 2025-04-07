@@ -12,14 +12,18 @@ import java.util.Map;
 @RequestMapping("/journal")
 public class JournalEntryController {
 
-    private Map<Long, JournalEntry> journalEntries = new HashMap<>();
+    private Map<Long, JournalEntry> journalEntries = new HashMap<>(); 
     /* The key is Long (entry ID), and the value is a JournalEntry object. */
 
     /* Methods inside a controller class should be public so that they can be accessed and invoked by the Spring FrameWork or External HTTP requests */
 
     @GetMapping //@GetMapping is an annotation used in Spring MVC to handle HTTP GET requests.     Get localhost:8080\journal
     public List<JournalEntry> getAll(){
-        return new ArrayList<>(journalEntries.values()); /* this Converts the values from the HashMap into a list and returns them.*/ 
+        return new ArrayList<>(journalEntries.values()); 
+        /* This method returns a list of all journal entries. */
+        /* The values() method returns a collection of all the values (JournalEntry objects) in the HashMap. */
+        /* The ArrayList constructor takes a collection as an argument and creates a new ArrayList containing the elements of that collection. */
+        /* this Converts the values from the HashMap into a list and returns them.*/   
     }
 
     @PostMapping /* POST localhost:8080\journal */
@@ -32,8 +36,9 @@ It returns a boolean (true means the entry was successfully added). */
     "content": "Hello this is the testing POST body 1"
 } it will be stored as new JournalEntry(1, "Hello Zubair", "Hello this is the testing POST body 1" ,  this will be create a new Entry in the JournalEntry with variable myEntry */
     {
-        journalEntries.put(myEntry.getId(), myEntry);
-        return true;
+        journalEntries.put(myEntry.getId(), myEntry); /* This line adds the new entry to the journalEntries map using the entry ID as the key. */
+        /* The put method is used to add a new entry to the HashMap. It takes two arguments: the key (entry ID) and the value (JournalEntry object). */ 
+        return true; /* This method returns true if the entry is created successfully. */
     }
 
 //    here we are creating a method to get an entry object based on the given id
