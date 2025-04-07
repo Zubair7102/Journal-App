@@ -40,3 +40,4 @@ public class JournalEntry {
         this.id = id;
     }
 }
+
