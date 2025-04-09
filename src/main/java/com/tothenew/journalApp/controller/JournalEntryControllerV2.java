@@ -1,6 +1,8 @@
 package com.tothenew.journalApp.controller;
 
 import com.tothenew.journalApp.entity.JournalEntry;
+import com.tothenew.journalApp.service.JournalEntryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,6 +11,9 @@ import java.util.List;
 @RequestMapping("/journal")
 public class JournalEntryControllerV2 {
 
+    @Autowired
+    private JournalEntryService journalEntryService;
+
     @GetMapping
     public List<JournalEntry> getAll() {
         return null;
@@ -16,6 +21,7 @@ public class JournalEntryControllerV2 {
 
     @PostMapping
     public boolean createEntry(@RequestBody JournalEntry myEntry) {
+        journalEntryService.saveEntry(myEntry);
         return true;
     }
 
