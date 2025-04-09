@@ -36,7 +36,7 @@ It returns a boolean (true means the entry was successfully added). */
     "content": "Hello this is the testing POST body 1"
 } it will be stored as new JournalEntry(1, "Hello Zubair", "Hello this is the testing POST body 1" ,  this will be create a new Entry in the JournalEntry with variable myEntry */
     {
-        journalEntries.put(myEntry.getId(), myEntry); /* This line adds the new entry to the journalEntries map using the entry ID as the key. */
+        /* journalEntries.put(myEntry.getId(), myEntry);  This line adds the new entry to the journalEntries map using the entry ID as the key. */
         /* The put method is used to add a new entry to the HashMap. It takes two arguments: the key (entry ID) and the value (JournalEntry object). */ 
         return true; /* This method returns true if the entry is created successfully. */
     }
