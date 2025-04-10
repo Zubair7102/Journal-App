@@ -3,6 +3,7 @@ package com.tothenew.journalApp.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+//this code file is just an understanding demo, it dpes not have any part in the code
 class EntryC{
     private String title;
     private String content;

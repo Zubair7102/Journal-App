@@ -4,10 +4,13 @@ import com.tothenew.journalApp.entity.JournalEntry;
 import com.tothenew.journalApp.service.JournalEntryService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/journal")
@@ -18,44 +21,66 @@ public class JournalEntryControllerV2 {
 
 //    method to get all entries
     @GetMapping
-    public List<JournalEntry> getAll() {
-        return journalEntryService.getAll();
+    public ResponseEntity<List<JournalEntry>> getAll() {
+        List<JournalEntry> allEntry =  journalEntryService.getAll();
+        if(allEntry != null && !allEntry.isEmpty())
+        {
+            return new ResponseEntity<>(allEntry, HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 //    method to create a new entry
     @PostMapping
-    public JournalEntry createEntry(@RequestBody JournalEntry myEntry) {
-        myEntry.setDate(LocalDateTime.now());
-        journalEntryService.saveEntry(myEntry);
-        return myEntry;
+    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry) {
+        try{
+            myEntry.setDate(LocalDateTime.now());
+            journalEntryService.saveEntry(myEntry);
+            return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 //    method to get an entry by Id
     @GetMapping("id/{myId}")
-    public JournalEntry getJournalEntryByID(@PathVariable ObjectId myId) {
-        return journalEntryService.findById(myId).orElse(null);
+    /* ResponseEntity is a class that helps you customize the entire HTTP response that you send back from a controller. */
+    public ResponseEntity<Object> getJournalEntryByID(@PathVariable ObjectId myId) {
+        Optional<JournalEntry> journalEntry = journalEntryService.findById(myId);
+        if(journalEntry.isPresent())
+        {
+            return new ResponseEntity<>(journalEntry.get(), HttpStatus.OK); //here using ResponseEntity we are sending Http codes
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 //    method to delete an entry by its Id
     @DeleteMapping("/id/{myId}")
-    public boolean deleteJournalEntryByID(@PathVariable ObjectId myId) {
+    public ResponseEntity<JournalEntry> deleteJournalEntryByID(@PathVariable ObjectId myId) {
 
         journalEntryService.deleteByid(myId);
-        return true;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        return true;
     }
 
 //    method to update an existing entry by its Id
     @PutMapping("/id/{id}")
-    public JournalEntry updateJournalById(@PathVariable ObjectId id, @RequestBody JournalEntry updatedEntry) {
+    public ResponseEntity<JournalEntry> updateJournalById(@PathVariable ObjectId id, @RequestBody JournalEntry updatedEntry) {
         JournalEntry oldEntry = journalEntryService.findById(id).orElse(null);
-        if(oldEntry != null)
-        {
+        if(oldEntry != null) {
             oldEntry.setTitle(updatedEntry.getTitle() != null && !updatedEntry.getTitle().equals("") ? updatedEntry.getTitle() : oldEntry.getTitle());
-            oldEntry.setContent(updatedEntry.getContent() != null && !updatedEntry.equals("") ? updatedEntry.getContent(): oldEntry.getContent());
+            oldEntry.setContent(updatedEntry.getContent() != null && !updatedEntry.equals("") ? updatedEntry.getContent() : oldEntry.getContent());
 
             journalEntryService.saveEntry(oldEntry);
-           return oldEntry;
+            return new ResponseEntity<>(oldEntry, HttpStatus.OK);
         }
-        return updatedEntry;
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
