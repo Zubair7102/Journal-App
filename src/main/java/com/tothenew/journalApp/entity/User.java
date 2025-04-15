@@ -25,4 +25,5 @@ public class User {
     @DBRef /* The @DBRef annotation is used to create a reference (relationship) between two MongoDB documents @DBRef tells MongoDB:
     "This field links to another collection && this creates a one-to-many relationship: One User → Many Journal Entries*/
     private List<JournalEntry> journalEntries = new ArrayList<>();
+    /* journalEntries will keep the reference of the entries created inside the journal_entries collection of the Journal DB   */
 }
