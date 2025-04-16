@@ -1,5 +1,6 @@
 package com.tothenew.journalApp.entity;
 
+import lombok.Data;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -11,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "users")
+@Data
 public class User {
 
     @Id private ObjectId id;
 
     @Indexed(unique = true) //this will ensure to keep unique username
-
     @NonNull
     private String userName;
     @NonNull
