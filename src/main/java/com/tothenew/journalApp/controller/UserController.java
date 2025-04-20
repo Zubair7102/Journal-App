@@ -35,10 +35,10 @@ public class UserController {
     }
 
 //    method to update an existing user
-    @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody User user)
+    @PutMapping("/{userName}")
+    public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable String userName)
     {
-        User userInDb = userService.findByUserName(user.getUserName());
+        User userInDb = userService.findByUserName(userName);
         if(userInDb != null)
         {
             userInDb.setUserName(user.getUserName());
@@ -51,6 +51,7 @@ public class UserController {
         }
     }
 
+//    Method to delete a user
     @DeleteMapping("/id/{userId}")
     public ResponseEntity<User> deleteUserById(@PathVariable("userId") ObjectId userId)
     {
