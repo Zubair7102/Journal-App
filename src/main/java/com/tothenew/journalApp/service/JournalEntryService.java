@@ -6,7 +6,9 @@ import com.tothenew.journalApp.repository.JournalEntryRepository;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,13 +30,20 @@ public class JournalEntryService {
 “Hey, I need an object of JournalEntryRepository here. Please create it and give it to me automatically. This is Known as Dependency injection ”
 * without @Autowired we have to write  JournalEntryRepository journalEntryRepository = new JournalEntryRepository(); // Manual way (not preferred in Spring) */
 
-    public void saveEntry(JournalEntry journalEntry, String userName)
+    @Transactional
+    public void saveEntry(JournalEntry journalEntry, String userName) throws Exception
     {
-        User user = userService.findByUserName(userName);
-        journalEntry.setDate(LocalDateTime.now());
-        JournalEntry saved = journalEntryRepository.save(journalEntry);
-        user.getJournalEntries().add(saved);
-        userService.saveUser(user);
+        try{
+            User user = userService.findByUserName(userName);
+            journalEntry.setDate(LocalDateTime.now());
+            JournalEntry saved = journalEntryRepository.save(journalEntry);
+            user.getJournalEntries().add(saved);
+            userService.saveUser(user);
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+            throw new Exception("Phatt Gaya Bhaiya !!");
+        }
     }
 
     public void saveEntry(JournalEntry journalEntry)
