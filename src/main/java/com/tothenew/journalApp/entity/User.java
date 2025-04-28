@@ -27,4 +27,6 @@ public class User {
     "This field links to another collection && this creates a one-to-many relationship: One User → Many Journal Entries*/
     private List<JournalEntry> journalEntries = new ArrayList<>();
     /* journalEntries will keep the reference of the entries created inside the journal_entries collection of the Journal DB   */
+
+    private List<String> roles;
 }
