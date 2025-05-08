@@ -21,7 +21,7 @@ public class JournalEntryService {
     /* @Autowired is an annotation used in Spring to automatically inject (or connect) one class into another */
 
 
-    private final JournalEntryRepository journalEntryRepository;
+    private static final JournalEntryRepository journalEntryRepository = null;
     @Autowired
     private UserService userService;
 
@@ -56,17 +56,34 @@ public class JournalEntryService {
         return journalEntryRepository.findAll();
     }
 
-    public Optional<JournalEntry> findById(ObjectId id)
+    public static Optional<JournalEntry> findById(ObjectId id)
     {
         return journalEntryRepository.findById(id);
     }
 
-    public void deleteByid(ObjectId id, String userName)
+    @Transactional
+    public boolean deleteByid(ObjectId id, String userName) throws Exception
     {
-        User user = userService.findByUserName(userName);
-        user.getJournalEntries().removeIf(x->x.getId().equals(id));
-        userService.saveUser(user); //saving updated user in the db
-        journalEntryRepository.deleteById(id);
+        boolean removed = false;
+        try{
+
+            User user = userService.findByUserName(userName);
+            removed = user.getJournalEntries().removeIf(x->x.getId().equals(id));
+            if(removed)
+            {
+                userService.saveUser(user); //saving updated user in the db
+                journalEntryRepository.deleteById(id);
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            throw new Exception("Failed to Delete the JournalEntry");
+        }
+        return removed;
+
+
     }
+
 
 }
