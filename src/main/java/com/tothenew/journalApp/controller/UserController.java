@@ -42,15 +42,21 @@ public class UserController {
 
 //    method to update an existing user
     @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody User user)
+    public ResponseEntity<User> updateUser(@RequestBody User user) throws Exception
     {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userName = authentication.getName();
-        User userInDb = userService.findByUserName(userName);
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String userName = authentication.getName();
+            User userInDb = userService.findByUserName(userName);
             userInDb.setUserName(user.getUserName());
             userInDb.setPassword(user.getPassword());
             userService.saveUser(userInDb);
             return new ResponseEntity<>(userInDb, HttpStatus.OK);
+        } catch (Exception e) {
+//            throw new Exception("Phatt gaya bhaiya");
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//
+        }
     }
 
 //    Method to delete a user
