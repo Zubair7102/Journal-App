@@ -24,7 +24,8 @@ public class SpringSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/journal/**", "/user/**").authenticated() // Only authenticated users can access /journal/**
+                        .requestMatchers("/journal/**", "/user/**").authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")// Only authenticated users can access /journal/**
                         .anyRequest().permitAll() // All other URLs are open
                 )
                 .httpBasic();// Enable basic HTTP authentication
