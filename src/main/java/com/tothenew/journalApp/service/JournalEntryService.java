@@ -20,8 +20,8 @@ public class JournalEntryService {
 //CONTROLLER --> SERVICE --> REPOSITORY
     /* @Autowired is an annotation used in Spring to automatically inject (or connect) one class into another */
 
-
-    private static final JournalEntryRepository journalEntryRepository = null;
+    @Autowired
+    private JournalEntryRepository journalEntryRepository ;
     @Autowired
     private UserService userService;
 
@@ -56,7 +56,7 @@ public class JournalEntryService {
         return journalEntryRepository.findAll();
     }
 
-    public static Optional<JournalEntry> findById(ObjectId id)
+    public Optional<JournalEntry> findById(ObjectId id)
     {
         return journalEntryRepository.findById(id);
     }
@@ -81,9 +81,5 @@ public class JournalEntryService {
             throw new Exception("Failed to Delete the JournalEntry");
         }
         return removed;
-
-
     }
-
-
 }
