@@ -100,7 +100,7 @@ public class JournalEntryControllerV2 {
 
 //    method to update an existing entry by its Id
     @PutMapping("/id/{id}")
-    public ResponseEntity<JournalEntry> updateJournalById(@PathVariable ObjectId id,@RequestBody JournalEntry updatedEntry) {
+    public ResponseEntity<?> updateJournalById(@PathVariable ObjectId id,@RequestBody JournalEntry updatedEntry) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
         User user = userService.findByUserName(userName);
@@ -113,6 +113,8 @@ public class JournalEntryControllerV2 {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Optional<JournalEntry> journalEntry = journalEntryService.findById(id);
+        /* here we are calling findById(id) to search for JournalEntry by its ID, There exists two possibilities 1. The Entry is Found and we get JournalEntry Object and 2. the entry is not found we get a null
+        * so in case of null if we use Optional it will avoid nullPointerException */
             if(journalEntry.isPresent())
             {
                 JournalEntry old = journalEntry.get();
