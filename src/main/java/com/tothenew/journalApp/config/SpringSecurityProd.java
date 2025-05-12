@@ -4,6 +4,7 @@ import com.tothenew.journalApp.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +16,8 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity // Activates security features like authentication and authorization.
-public class SpringSecurity {
+@Profile("prod")
+public class SpringSecurityProd {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
@@ -24,9 +26,7 @@ public class SpringSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/journal/**", "/user/**").authenticated()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")// Only authenticated users can access /journal/**
-                        .anyRequest().permitAll() // All other URLs are open
+                        .anyRequest().authenticated()
                 )
                 .httpBasic();// Enable basic HTTP authentication
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().csrf().disable();
