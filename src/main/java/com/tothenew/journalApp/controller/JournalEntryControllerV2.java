@@ -28,7 +28,7 @@ public class JournalEntryControllerV2 {
     @Autowired
     private UserService userService;
 
-//    method to get all entries
+//    method to get all entries of a user
     @GetMapping
     public ResponseEntity<List<JournalEntry>> getAllJournalEntriesOfUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

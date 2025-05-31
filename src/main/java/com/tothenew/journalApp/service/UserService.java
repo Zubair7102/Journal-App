@@ -5,7 +5,10 @@ import com.tothenew.journalApp.entity.User;
 import com.tothenew.journalApp.repository.JournalEntryRepository;
 import com.tothenew.journalApp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -16,6 +19,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class UserService {
 
 //CONTROLLER --> SERVICE --> REPOSITORY
@@ -23,6 +27,8 @@ public class UserService {
 
 
     private final UserRepository userRepository;
+
+    private static  final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     /* the above 2 lines are basically means that
     * It tells Spring:
@@ -39,6 +45,7 @@ public class UserService {
             userRepository.save(user);
 //            return true;
         } catch (Exception e) {
+            logger.error("Failed to save new user/ Dublicate User {} :", user.getUserName(), e);
             throw new RuntimeException(e);
 //            return false;
         }

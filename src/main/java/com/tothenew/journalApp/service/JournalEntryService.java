@@ -4,7 +4,10 @@ import com.tothenew.journalApp.entity.JournalEntry;
 import com.tothenew.journalApp.entity.User;
 import com.tothenew.journalApp.repository.JournalEntryRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.stereotype.Component;
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class JournalEntryService {
 
 //CONTROLLER --> SERVICE --> REPOSITORY
@@ -24,6 +28,7 @@ public class JournalEntryService {
     private JournalEntryRepository journalEntryRepository ;
     @Autowired
     private UserService userService;
+
 
     /* the above 2 lines are basically means that
     * It tells Spring:
@@ -41,11 +46,12 @@ public class JournalEntryService {
             userService.saveUser(user);
         }catch(Exception e)
         {
-            e.printStackTrace();
+            log.error("Error faced during saving of Journal Entry");
             throw new Exception("Phatt Gaya Bhaiya !!");
         }
     }
 
+//    this is the old journal entry update method
     public void saveEntry(JournalEntry journalEntry)
     {
         journalEntryRepository.save(journalEntry);
