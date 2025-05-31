@@ -1,3 +1,10 @@
 spring:
   profiles:
     active: dev
+
+#enabling debug and trace as it is not default enabled in Slf4j
+logging:
+  level:
+    net:
+      tothenew:
+        journalApp: DEBUG
