@@ -30,6 +30,7 @@ public class JournalEntryService {
     private UserService userService;
 
 
+
     /* the above 2 lines are basically means that
     * It tells Spring:
 “Hey, I need an object of JournalEntryRepository here. Please create it and give it to me automatically. This is Known as Dependency injection ”
@@ -83,7 +84,7 @@ public class JournalEntryService {
         }
         catch (Exception e)
         {
-            System.out.println(e.getMessage());
+            log.error("Failed to delete the JournalEntry");
             throw new Exception("Failed to Delete the JournalEntry");
         }
         return removed;
