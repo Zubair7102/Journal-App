@@ -8,3 +8,7 @@ logging:
     net:
       tothenew:
         journalApp: DEBUG
+
+weather:
+  api:
+    key: 0fd82e643c0826808b8a4632afd80952
