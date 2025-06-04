@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findByUserName(username);
         if(user != null)
         {
-            UserDetails userDetails =  org.springframework.security.core.userdetails.User.builder()
+            return org.springframework.security.core.userdetails.User.builder()
                     /* This line creates a new User object from Spring Security using its builder pattern.
 It’s creating a UserDetails object, which contains the username, password, and roles of the user. */
                     .username(user.getUserName()) //This sets the username in the UserDetails object to the username retrieved from the user object (fetched from the database).
@@ -31,7 +31,7 @@ It’s creating a UserDetails object, which contains the username, password, and
 user.getRoles() returns the roles as a list (like ADMIN, USER, etc.).
 .toArray(new String[0]) converts that list into an array of strings, */
                     .build(); //This builds the UserDetails object and returns it, completing the creation of the UserDetails with username, password, and roles.
-                    return userDetails;
+//                    return userDetails;
 
 
         }
