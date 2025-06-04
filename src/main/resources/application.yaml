@@ -8,3 +8,7 @@ logging:
     net:
       tothenew:
         journalApp: DEBUG
+
+weather:
+  api:
+    key: ***REDACTED_WEATHER_KEY***
