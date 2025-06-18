@@ -7,12 +7,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /*This code helps Spring Security to fetch user details (like username, password, roles) from your own database (not from in-memory, but from your UserRepository).
 It is a custom implementation of UserDetailsService to connect Spring Security and your User table.
 Whenever someone tries to login, Spring Security calls this loadUserByUsername method to check if the username and password are correct. */
 
-@Component
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
