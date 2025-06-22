@@ -1,5 +1,6 @@
 package com.tothenew.journalApp.controller;
 
+import com.tothenew.journalApp.cache.AppCache;
 import com.tothenew.journalApp.entity.JournalEntry;
 import com.tothenew.journalApp.entity.User;
 import com.tothenew.journalApp.service.JournalEntryService;
@@ -16,6 +17,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+    @Autowired
+    private AppCache appCache;
     @Autowired
     private UserService userService;
 
@@ -49,6 +52,12 @@ public class AdminController {
     public void createUser(@RequestBody User user)
     {
         userService.saveAdmin(user);
+    }
+
+    @GetMapping("clear-app-cache")
+    public void clearAppCache()
+    {
+        appCache.init();
     }
 
 }
