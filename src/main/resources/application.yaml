@@ -2,6 +2,19 @@ spring:
   profiles:
     active: dev
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: kaicidummy@gmail.com
+    password: ***REDACTED_MAIL_PASSWORD***
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
 #enabling debug and trace as it is not default enabled in Slf4j
 logging:
   level:
@@ -12,3 +25,4 @@ logging:
 weather:
   api:
     key: ***REDACTED_WEATHER_KEY***
+

@@ -1,7 +1,6 @@
 package com.tothenew.journalApp.entity;
 
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -13,6 +12,9 @@ import java.util.List;
 
 @Document(collection = "users")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id private ObjectId id;
@@ -22,6 +24,9 @@ public class User {
     private String userName;
     @NonNull
     private String password;
+
+    private String email;
+    private Boolean sentimentAnalysis;
 
     @DBRef /* The @DBRef annotation is used to create a reference (relationship) between two MongoDB documents @DBRef tells MongoDB:
     "This field links to another collection && this creates a one-to-many relationship: One User → Many Journal Entries*/
