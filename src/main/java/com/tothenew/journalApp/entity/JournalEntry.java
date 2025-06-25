@@ -1,5 +1,6 @@
 package com.tothenew.journalApp.entity;
 
+import com.tothenew.journalApp.enums.Sentiment;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -24,48 +25,7 @@ public class JournalEntry {
     private String content;
 
     private LocalDateTime date;
+    private Sentiment sentiment;
 
-////    getter Date
-//    public LocalDateTime getDate() {
-//        return date;
-//    }
-//
-////    Setter
-//    public void setDate(LocalDateTime date)
-//    {
-//        this.date = date;
-//    }
-////    content getters
-//    public String getContent() {
-//        return content;
-//    }
-//
-////    Title getter
-//    public String getTitle() {
-//        return title;
-//    }
-//
-////    Id getter
-//    public ObjectId getId() {
-//        return id;
-//    }
-//
-////    content Setters
-//    public void setContent(String content)
-//    {
-//        this.content = content;
-//    }
-//
-////    Title setter
-//    public void setTitle(String title)
-//    {
-//        this.title = title;
-//    }
-//
-////    Id setter
-//    public void setId(ObjectId id)
-//    {
-//        this.id = id;
-//    }
 }
 
