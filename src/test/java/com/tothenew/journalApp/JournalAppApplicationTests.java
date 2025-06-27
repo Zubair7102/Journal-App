@@ -1,13 +1,15 @@
-//package com.tothenew.journalApp;
-//
-//import org.junit.jupiter.api.Test;
-//import org.springframework.boot.test.context.SpringBootTest;
-//
-//@SpringBootTest
-//class JournalAppApplicationTests {
-//
-//	@Test
-//	void contextLoads() {
-//	}
-//
-//}
+package com.tothenew.journalApp;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class JournalAppApplicationTests {
+
+	@Disabled
+	@Test
+	void contextLoads() {
+	}
+
+}
