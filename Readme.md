@@ -1,6 +1,6 @@
 # 📝 Journal App
 
-Welcome to the **Journal App** — a secure, user-friendly platform for writing, editing, and managing personal journal entries, built with Spring Boot and MongoDB.
+Welcome to the **Journal App** — a secure, user-friendly platform for writing, editing, and managing personal journal entries, built with Spring Boot, MongoDB, and Redis.
 
 ---
 
@@ -10,6 +10,8 @@ Welcome to the **Journal App** — a secure, user-friendly platform for writing,
 - **Admin endpoints** for user and journal management
 - **Weather integration**: Get weather-based greetings
 - **MongoDB** for persistent storage
+- **Redis caching** for weather data (improves performance and reduces API calls)
+- **Scheduled jobs** for cache refresh and weekly sentiment analysis emails
 - **Profile-based configuration** (dev/prod)
 - **RESTful API** with clear endpoint structure
 - **Dockerized** for easy deployment
@@ -20,6 +22,7 @@ Welcome to the **Journal App** — a secure, user-friendly platform for writing,
 - Java 17
 - Spring Boot 3.x
 - Spring Data MongoDB
+- Spring Data Redis
 - Spring Security
 - Lombok
 - Docker
@@ -33,11 +36,12 @@ Journal-App/
 ├── src/main/java/com/tothenew/journalApp/
 │   ├── api/response/WeatherResponse.java
 │   ├── cache/AppCache.java
-│   ├── config/SpringSecurityDev.java, SpringSecurityProd.java
+│   ├── config/SpringSecurityDev.java, SpringSecurityProd.java, RedisConfig.java
 │   ├── controller/...
 │   ├── entity/User.java, JournalEntry.java, ConfigJournalAppEntity.java
 │   ├── repository/...
-│   ├── service/...
+│   ├── scheduler/UserScheduler.java
+│   ├── service/RedisService.java, WeatherService.java, ...
 │   └── JournalApplication.java
 ├── src/main/resources/
 │   ├── application.yaml, application-dev.yaml, application-prod.yaml
@@ -56,6 +60,15 @@ Journal-App/
   - `prod`: uses `application-prod.yaml` (port 8081)
 - **MongoDB:**
   - URI and database are set in the profile YAML files.
+- **Redis:**
+  - Add to your YAML:
+    ```yaml
+    spring:
+      redis:
+        host: localhost
+        port: 6379
+    ```
+  - Make sure Redis is running and accessible.
 - **Weather API:**
   - API key and endpoint are set in `application.yaml` and loaded via `AppCache`.
 - **Logging:**
@@ -69,6 +82,7 @@ Journal-App/
 - Java 17+
 - Maven
 - MongoDB (local or cloud, see config)
+- Redis (local or cloud, see config)
 
 ### Local Development
 ```bash
@@ -86,7 +100,7 @@ Journal-App/
 ```
 
 ### Configuration
-- Edit `src/main/resources/application-dev.yaml` or `application-prod.yaml` for DB and server settings.
+- Edit `src/main/resources/application-dev.yaml` or `application-prod.yaml` for DB, Redis, and server settings.
 - Set `SPRING_PROFILES_ACTIVE` to `prod` for production.
 
 ---
@@ -102,7 +116,7 @@ Journal-App/
  docker run -p 8081:8081 --env SPRING_PROFILES_ACTIVE=prod journal-app
 ```
 - The app will use the `prod` profile by default in Docker.
-- Ensure MongoDB is accessible from the container.
+- Ensure MongoDB and Redis are accessible from the container.
 
 ---
 
@@ -128,6 +142,7 @@ Journal-App/
 - `GET /admin/all-users` — List all users
 - `GET /admin/all-journals` — List all journal entries
 - `POST /admin/create-admin-user` — Create an admin user
+- `GET /admin/clear-app-cache` — Refreshes the application cache
 
 ---
 
@@ -138,6 +153,8 @@ Journal-App/
 {
   "userName": "string",
   "password": "string",
+  "email": "string",
+  "sentimentAnalysis": true,
   "roles": ["USER", "ADMIN"],
   "journalEntries": [ ... ]
 }
@@ -149,7 +166,8 @@ Journal-App/
   "id": "ObjectId",
   "title": "string",
   "content": "string",
-  "date": "ISODateTime"
+  "date": "ISODateTime",
+  "sentiment": "POSITIVE|NEGATIVE|NEUTRAL"
 }
 ```
 
@@ -162,8 +180,15 @@ Journal-App/
 
 ---
 
-## 🌦️ Weather Integration
+## 🌦️ Weather Integration & Caching
 - Uses a weather API (see `weather.api.key` in config)
+- Caches weather data in Redis for 5 minutes per city
 - Endpoint: `/user/greet?cityName=City`
+
+---
+
+## ⏰ Scheduled Jobs
+- **Sentiment Analysis Email:** Every 10 minutes, users with sentiment analysis enabled receive a summary email of their last 7 days' journal sentiment.
+- **Cache Refresh:** Every 10 minutes, the application cache is refreshed.
 
 ---
