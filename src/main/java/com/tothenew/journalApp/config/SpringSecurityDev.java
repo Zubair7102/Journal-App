@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,18 +37,12 @@ public class SpringSecurityDev {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-        /* Ask Spring Security: "Give me the AuthenticationManagerBuilder object", which helps build AuthenticationManager step-by-step. */
-        authenticationManagerBuilder.userDetailsService(userDetailsService) /* Tell Spring: "Whenever someone logs in, use my custom UserDetailsServiceImpl class to load user info (username, password, roles) from database." */
-                .passwordEncoder(passwordEncoder());
-        return authenticationManagerBuilder.build(); /* Build and return the AuthenticationManager ready to use for login."
-         */
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // BCrypt algorithm to encode passwords
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // BCrypt algorithm to encode passwords
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration auth) throws Exception {
+        return auth.getAuthenticationManager();
     }
 }

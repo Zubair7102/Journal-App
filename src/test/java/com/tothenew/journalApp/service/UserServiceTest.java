@@ -39,7 +39,7 @@ public class UserServiceTest {
     @CsvSource({
             "1,1,2",
             "2,10,12",
-            "3,3,9"   /* Fail */
+            "3,3,6"   /* Fail */
     })
     public void test(int a, int b, int expected)
     {
