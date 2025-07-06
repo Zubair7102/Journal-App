@@ -39,7 +39,7 @@ public class WeatherService {
         WeatherResponse body = response.getBody();
         if(body != null)
         {
-            redisService.set("weather_of_" + city, body, 300l);
+            redisService.set("weather_of_" + city, body, 300L);
         }
         return body;
     }
