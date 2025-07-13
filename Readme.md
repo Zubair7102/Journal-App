@@ -1,194 +1,388 @@
 # 📝 Journal App
 
-Welcome to the **Journal App** — a secure, user-friendly platform for writing, editing, and managing personal journal entries, built with Spring Boot, MongoDB, and Redis.
+Welcome to the **Journal App** — a secure, feature-rich platform for personal journaling with sentiment analysis, weather integration, and comprehensive user management. Built with Spring Boot 3.x, MongoDB, Redis, and JWT authentication.
 
 ---
 
 ## 🚀 Features
-- **User Registration & Authentication** (with roles: USER, ADMIN)
-- **Create, Read, Update, Delete (CRUD) Journal Entries**
-- **Admin endpoints** for user and journal management
-- **Weather integration**: Get weather-based greetings
-- **MongoDB** for persistent storage
-- **Redis caching** for weather data (improves performance and reduces API calls)
-- **Scheduled jobs** for cache refresh and weekly sentiment analysis emails
-- **Profile-based configuration** (dev/prod)
-- **RESTful API** with clear endpoint structure
-- **Dockerized** for easy deployment
+
+### 🔐 **Authentication & Security**
+- **JWT-based Authentication** with secure token management
+- **User Registration & Login** with password encryption (BCrypt)
+- **Role-based Access Control** (USER, ADMIN roles)
+- **Stateless Session Management**
+
+### 📝 **Journal Management**
+- **CRUD Operations** for journal entries
+- **Sentiment Analysis** with automatic categorization (HAPPY, SAD, ANGRY, ANXIOUS)
+- **User-specific Journal Entries** with secure access
+- **Real-time Entry Management**
+
+### 🌦️ **Weather Integration**
+- **Weather-based Greetings** with current conditions
+- **Redis Caching** for weather data (5-minute TTL)
+- **Multi-city Support** with automatic cache refresh
+- **Weather API Integration** (WeatherStack)
+
+### 📧 **Email Services**
+- **Scheduled Sentiment Reports** (every 10 minutes)
+- **Weekly Sentiment Analysis** emails for users
+- **Automated Email Notifications**
+
+### ⚙️ **System Features**
+- **Profile-based Configuration** (dev/prod environments)
+- **MongoDB Integration** with automatic indexing
+- **Redis Caching** for performance optimization
+- **Scheduled Jobs** for maintenance tasks
+- **Comprehensive Logging** with Logback
+- **Docker Support** for containerized deployment
+- **Swagger/OpenAPI 3** documentation
 
 ---
 
 ## 🛠️ Tech Stack
-- Java 17
-- Spring Boot 3.x
-- Spring Data MongoDB
-- Spring Data Redis
-- Spring Security
-- Lombok
-- Docker
-- Maven
+
+### **Backend Framework**
+- **Java 17** with Spring Boot 3.2.5
+- **Spring Security** for authentication & authorization
+- **Spring Data MongoDB** for database operations
+- **Spring Data Redis** for caching
+- **Spring Mail** for email services
+
+### **Database & Caching**
+- **MongoDB** (Atlas cloud database)
+- **Redis** for session and weather data caching
+- **MongoDB Atlas** for cloud database hosting
+
+### **Security & Authentication**
+- **JWT (JSON Web Tokens)** for stateless authentication
+- **BCrypt** password hashing
+- **Spring Security** with custom filters
+
+### **Documentation & Testing**
+- **Swagger/OpenAPI 3** for API documentation
+- **Spring Boot Test** for unit testing
+- **JUnit 5** for test framework
+
+### **DevOps & Deployment**
+- **Docker** for containerization
+- **Maven** for build management
+- **Lombok** for reducing boilerplate code
 
 ---
 
-## 📦 Project Structure
+## 📦 Project Architecture
+
 ```
 Journal-App/
 ├── src/main/java/com/tothenew/journalApp/
-│   ├── api/response/WeatherResponse.java
-│   ├── cache/AppCache.java
-│   ├── config/SpringSecurityDev.java, SpringSecurityProd.java, RedisConfig.java
-│   ├── controller/...
-│   ├── entity/User.java, JournalEntry.java, ConfigJournalAppEntity.java
-│   ├── repository/...
-│   ├── scheduler/UserScheduler.java
-│   ├── service/RedisService.java, WeatherService.java, ...
-│   └── JournalApplication.java
+│   ├── api/response/
+│   │   └── WeatherResponse.java          # Weather API response models
+│   ├── cache/
+│   │   └── AppCache.java                 # Application configuration cache
+│   ├── config/
+│   │   ├── OpenApiConfig.java            # Swagger/OpenAPI configuration
+│   │   ├── RedisConfig.java              # Redis connection configuration
+│   │   ├── SpringSecurityDev.java        # Development security config
+│   │   └── SpringSecurityProd.java       # Production security config
+│   ├── controller/
+│   │   ├── AdminController.java          # Admin-only endpoints
+│   │   ├── JournalEntryController.java   # Legacy journal controller
+│   │   ├── JournalEntryControllerV2.java # Main journal controller
+│   │   ├── PublicController.java         # Public endpoints (auth)
+│   │   └── UserController.java           # User management endpoints
+│   ├── entity/
+│   │   ├── ConfigJournalAppEntity.java   # Configuration entity
+│   │   ├── JournalEntry.java             # Journal entry model
+│   │   └── User.java                     # User model
+│   ├── enums/
+│   │   └── Sentiment.java                # Sentiment analysis enum
+│   ├── filter/
+│   │   └── JwtFilter.java                # JWT authentication filter
+│   ├── repository/
+│   │   ├── ConfigJournalAppRepository.java
+│   │   ├── JournalEntryRepository.java
+│   │   ├── UserRepository.java
+│   │   └── UserRepositoryImpl.java
+│   ├── scheduler/
+│   │   └── UserScheduler.java            # Scheduled jobs
+│   ├── service/
+│   │   ├── EmailService.java             # Email functionality
+│   │   ├── JournalEntryService.java      # Journal business logic
+│   │   ├── RedisService.java             # Redis operations
+│   │   ├── UserDetailsServiceImpl.java   # Spring Security user details
+│   │   ├── UserService.java              # User business logic
+│   │   └── WeatherService.java           # Weather API integration
+│   ├── utils/
+│   │   └── JwtUtil.java                  # JWT token utilities
+│   └── JournalApplication.java           # Main application class
 ├── src/main/resources/
-│   ├── application.yaml, application-dev.yaml, application-prod.yaml
-│   ├── logback.xml
-│   └── ...
-├── Dockerfile
-├── pom.xml
-└── Readme.md
+│   ├── application-dev.yaml              # Development configuration
+│   ├── application-prod.yaml             # Production configuration
+│   ├── application.properties            # Common properties
+│   └── logback.xml                       # Logging configuration
+├── src/test/                             # Test files
+├── Dockerfile                            # Docker configuration
+├── pom.xml                               # Maven dependencies
+└── Readme.md                             # This file
 ```
 
 ---
 
 ## ⚙️ Configuration
-- **Profiles:**
-  - `dev` (default): uses `application-dev.yaml` (port 8080)
-  - `prod`: uses `application-prod.yaml` (port 8081)
-- **MongoDB:**
-  - URI and database are set in the profile YAML files.
-- **Redis:**
-  - Add to your YAML:
-    ```yaml
-    spring:
-      redis:
-        host: localhost
-        port: 6379
-    ```
-  - Make sure Redis is running and accessible.
-- **Weather API:**
-  - API key and endpoint are set in `application.yaml` and loaded via `AppCache`.
-- **Logging:**
-  - Console and file logging via `logback.xml`.
+
+### **Environment Profiles**
+- **Development (`dev`)**: Port 8080, detailed logging, Swagger enabled
+- **Production (`prod`)**: Port 8081, optimized settings, basic auth
+
+### **Database Configuration**
+```yaml
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://[username]:[password]@journal.gnjq81h.mongodb.net/
+      database: journaldb
+      auto-index-creation: true
+```
+
+### **Redis Configuration**
+```yaml
+spring:
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 2000ms
+```
+
+### **Weather API Configuration**
+```yaml
+weather:
+  api:
+    key: your_weather_api_key
+```
+
+### **Email Configuration**
+```yaml
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your_email@gmail.com
+    password: your_app_password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+```
 
 ---
 
 ## 🏁 Getting Started
 
-### Prerequisites
-- Java 17+
-- Maven
-- MongoDB (local or cloud, see config)
-- Redis (local or cloud, see config)
+### **Prerequisites**
+- **Java 17** or higher
+- **Maven 3.8+**
+- **MongoDB** (local or MongoDB Atlas)
+- **Redis** (local or cloud)
+- **Weather API Key** (WeatherStack recommended)
 
-### Local Development
-```bash
-# Clone the repo
- git clone <repo-url>
- cd Journal-App
+### **Local Development Setup**
 
-# Build the project
- ./mvnw clean package
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/Zubair7102/Journal-App.git
+   cd Journal-App
+   ```
 
-# Run with dev profile (default)
- ./mvnw spring-boot:run
-# Or run the JAR
- java -jar target/*.jar
-```
+2. **Configure Environment**
+   - Copy `application-dev.yaml` and update with your credentials
+   - Set up MongoDB Atlas or local MongoDB
+   - Configure Redis connection
+   - Add Weather API key
 
-### Configuration
-- Edit `src/main/resources/application-dev.yaml` or `application-prod.yaml` for DB, Redis, and server settings.
-- Set `SPRING_PROFILES_ACTIVE` to `prod` for production.
+3. **Build and Run**
+   ```bash
+   # Build the project
+   ./mvnw clean package
+
+   # Run with development profile
+   ./mvnw spring-boot:run -Dspring.profiles.active=dev
+   
+   # Or run the JAR directly
+   java -jar target/journalApp-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
+   ```
+
+4. **Access the Application**
+   - **API Base URL**: `http://localhost:8080`
+   - **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+   - **Health Check**: `http://localhost:8080/public/health-check`
 
 ---
 
-## 🐳 Docker
+## 🐳 Docker Deployment
 
-### Build & Run
+### **Build Docker Image**
 ```bash
-# Build the Docker image
- docker build -t journal-app .
-
-# Run the container (default: prod profile)
- docker run -p 8081:8081 --env SPRING_PROFILES_ACTIVE=prod journal-app
+docker build -t journal-app .
 ```
-- The app will use the `prod` profile by default in Docker.
-- Ensure MongoDB and Redis are accessible from the container.
+
+### **Run Container**
+```bash
+# Development
+docker run -p 8080:8080 \
+  -e SPRING_PROFILES_ACTIVE=dev \
+  -e MONGODB_URI=your_mongodb_uri \
+  -e REDIS_HOST=your_redis_host \
+  journal-app
+
+# Production
+docker run -p 8081:8081 \
+  -e SPRING_PROFILES_ACTIVE=prod \
+  -e MONGODB_URI=your_mongodb_uri \
+  -e REDIS_HOST=your_redis_host \
+  journal-app
+```
 
 ---
 
 ## 🔑 API Endpoints
 
-### Public
-- `GET /public/health-check` — Health check
-- `POST /public/create-user` — Register a new user
+### **Public Endpoints** (No Authentication Required)
+| Method | Endpoint | Description | Request Body | Response |
+|--------|----------|-------------|--------------|----------|
+| `GET` | `/public/health-check` | Application health status | - | `"OK"` |
+| `POST` | `/public/signup` | User registration | `User` object | JWT token or error |
+| `POST` | `/public/login` | User authentication | `User` credentials | JWT token or error |
 
-### User (requires authentication)
-- `PUT /user` — Update user info
-- `DELETE /user` — Delete user
-- `GET /user/greet?cityName=City` — Weather-based greeting
+### **User Endpoints** (JWT Authentication Required)
+| Method | Endpoint | Description | Request Body | Response |
+|--------|----------|-------------|--------------|----------|
+| `PUT` | `/user` | Update user profile | `User` object | Updated user |
+| `DELETE` | `/user` | Delete user account | - | 204 No Content |
+| `GET` | `/user/greet` | Weather-based greeting | Query param: `cityName` | Greeting message |
 
-### Journal (requires authentication)
-- `GET /journal` — Get all journal entries for the user
-- `POST /journal` — Create a new journal entry
-- `GET /journal/id/{id}` — Get a journal entry by ID
-- `PUT /journal/id/{id}` — Update a journal entry by ID
-- `DELETE /journal/id/{id}` — Delete a journal entry by ID
+### **Journal Endpoints** (JWT Authentication Required)
+| Method | Endpoint | Description | Request Body | Response |
+|--------|----------|-------------|--------------|----------|
+| `GET` | `/journal` | Get user's journal entries | - | List of entries |
+| `POST` | `/journal` | Create new journal entry | `JournalEntry` object | Created entry |
+| `GET` | `/journal/id/{id}` | Get specific entry | - | Journal entry |
+| `PUT` | `/journal/id/{id}` | Update journal entry | `JournalEntry` object | Updated entry |
+| `DELETE` | `/journal/id/{id}` | Delete journal entry | - | 204 No Content |
 
-### Admin (requires ADMIN role)
-- `GET /admin/all-users` — List all users
-- `GET /admin/all-journals` — List all journal entries
-- `POST /admin/create-admin-user` — Create an admin user
-- `GET /admin/clear-app-cache` — Refreshes the application cache
+### **Admin Endpoints** (ADMIN Role Required)
+| Method | Endpoint | Description | Request Body | Response |
+|--------|----------|-------------|--------------|----------|
+| `GET` | `/admin/all-users` | List all users | - | List of users |
+| `GET` | `/admin/all-journals` | List all journal entries | - | List of entries |
+| `POST` | `/admin/create-admin-user` | Create admin user | `User` object | - |
+| `GET` | `/admin/clear-app-cache` | Refresh application cache | - | - |
+
+### **Legacy Endpoints** (Deprecated)
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| `GET` | `/_journal` | Get all entries (legacy) | Deprecated |
+| `POST` | `/_journal` | Create entry (legacy) | Deprecated |
 
 ---
 
-## 🗄️ Data Models
+## 📚 API Documentation (Swagger)
 
-### User
-```json
-{
-  "userName": "string",
-  "password": "string",
-  "email": "string",
-  "sentimentAnalysis": true,
-  "roles": ["USER", "ADMIN"],
-  "journalEntries": [ ... ]
-}
+### **Accessing Swagger UI**
+- **Development**: `http://localhost:8080/swagger-ui.html`
+- **Production**: `http://localhost:8081/swagger-ui.html`
+- **OpenAPI JSON**: `http://localhost:8080/api-docs`
+
+### **Features**
+- **Interactive API Testing**: Test endpoints directly from browser
+- **Request/Response Examples**: See example payloads for all endpoints
+- **JWT Authentication**: Built-in Bearer token support
+- **Schema Documentation**: Detailed models for all entities
+- **Response Codes**: Complete HTTP status code documentation
+
+---
+
+## 🔒 Security Implementation
+
+### **JWT Authentication Flow**
+1. **Login**: User provides credentials → JWT token generated
+2. **Request**: Client includes JWT in Authorization header
+3. **Validation**: JwtFilter validates token and sets authentication
+4. **Access**: Spring Security grants access based on roles
+
+### **Password Security**
+- **BCrypt Hashing**: All passwords encrypted with BCrypt
+- **Salt Generation**: Automatic salt generation for each password
+- **Secure Storage**: Encrypted passwords stored in MongoDB
+
+### **Token Management**
+- **JWT Secret**: Secure secret key for token signing
+- **Token Expiration**: 1-hour token validity
+- **Stateless**: No server-side session storage
+
+### **Role-based Access Control**
+- **USER Role**: Access to personal journal entries and profile
+- **ADMIN Role**: Access to all users and system management
+- **Public Endpoints**: Health check, signup, and login
+
+---
+
+## 🌦️ Weather Integration
+
+### **Features**
+- **Real-time Weather Data**: Current conditions for any city
+- **Redis Caching**: 5-minute cache to reduce API calls
+- **Automatic Refresh**: Scheduled cache refresh every 10 minutes
+- **Error Handling**: Graceful fallback for API failures
+
+### **Usage**
+```bash
+GET /user/greet?cityName=New%20York
+Authorization: Bearer <jwt_token>
 ```
 
-### JournalEntry
-```json
-{
-  "id": "ObjectId",
-  "title": "string",
-  "content": "string",
-  "date": "ISODateTime",
-  "sentiment": "POSITIVE|NEGATIVE|NEUTRAL"
-}
+### **Response**
 ```
-
----
-
-## 🔒 Security
-- HTTP Basic Auth (username/password)
-- Role-based access (USER, ADMIN)
-- Passwords are hashed with BCrypt
-
----
-
-## 🌦️ Weather Integration & Caching
-- Uses a weather API (see `weather.api.key` in config)
-- Caches weather data in Redis for 5 minutes per city
-- Endpoint: `/user/greet?cityName=City`
+"Hi john_doe Weather feels like 24"
+```
 
 ---
 
 ## ⏰ Scheduled Jobs
-- **Sentiment Analysis Email:** Every 10 minutes, users with sentiment analysis enabled receive a summary email of their last 7 days' journal sentiment.
-- **Cache Refresh:** Every 10 minutes, the application cache is refreshed.
+
+### **Sentiment Analysis Email** (Every 10 minutes)
+- **Purpose**: Send weekly sentiment reports to users
+- **Trigger**: Cron job `0 */10 * * * *`
+- **Process**: 
+  1. Fetch users with sentiment analysis enabled
+  2. Analyze last 7 days of journal entries
+  3. Calculate most frequent sentiment
+  4. Send email with sentiment summary
+
+### **Cache Refresh** (Every 10 minutes)
+- **Purpose**: Refresh application configuration cache
+- **Trigger**: Cron job `0 */10 * * * *`
+- **Process**: Reload configuration from MongoDB
+
+---
+
+## 📧 Email Services
+
+### **Configuration**
+```yaml
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your_email@gmail.com
+    password: your_app_password
+```
+
+### **Features**
+- **Scheduled Emails**: Automatic sentiment reports
+- **Error Handling**: Graceful failure handling
+- **Logging**: Comprehensive email operation logging
 
 ---
