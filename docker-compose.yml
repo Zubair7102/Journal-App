@@ -1,0 +1,119 @@
+version: '3.8'
+
+services:
+  # Journal App Service
+  journal-app:
+    build:
+      context: .
+      target: development  # Use development stage for local development
+    container_name: journal-app-dev
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/journaldb
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - WEATHER_API_KEY=${WEATHER_API_KEY:-your_weather_api_key}
+      - SPRING_MAIL_HOST=${MAIL_HOST:-smtp.gmail.com}
+      - SPRING_MAIL_PORT=${MAIL_PORT:-587}
+      - SPRING_MAIL_USERNAME=${MAIL_USERNAME:-your_email@gmail.com}
+      - SPRING_MAIL_PASSWORD=${MAIL_PASSWORD:-your_app_password}
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - journal-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/public/health-check"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # MongoDB Service
+  mongodb:
+    image: mongo:7.0
+    container_name: journal-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=journaldb
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d
+    networks:
+      - journal-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis Service
+  redis:
+    image: redis:7.2-alpine
+    container_name: journal-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - journal-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # MongoDB Express (Optional - for database management)
+  mongo-express:
+    image: mongo-express:1.0.0
+    container_name: journal-mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin123
+    depends_on:
+      - mongodb
+    networks:
+      - journal-network
+    restart: unless-stopped
+    profiles:
+      - tools
+
+  # Redis Commander (Optional - for Redis management)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: journal-redis-commander
+    ports:
+      - "8082:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    depends_on:
+      - redis
+    networks:
+      - journal-network
+    restart: unless-stopped
+    profiles:
+      - tools
+
+volumes:
+  mongodb_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  journal-network:
+    driver: bridge 
