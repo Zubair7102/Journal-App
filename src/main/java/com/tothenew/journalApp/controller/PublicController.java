@@ -38,9 +38,16 @@ public class PublicController {
     }
 
     @PostMapping("/signup")
-    public void signup(@RequestBody User user)
-    {
+    public ResponseEntity<String> signup(@RequestBody User user) {
+        log.info("Signup endpoint called for user: {}", user.getUserName());
+        // Check if user already exists
+        if (userService.findByUserName(user.getUserName()) != null) {
+            log.info("User already exists: {}", user.getUserName());
+            return new ResponseEntity<>("User already exists", HttpStatus.CONFLICT);
+        }
         userService.saveNewUser(user);
+        log.info("Signup successful for user: {}", user.getUserName());
+        return new ResponseEntity<>("Signup successful", HttpStatus.CREATED);
     }
 
     @PostMapping("/login")

@@ -44,13 +44,10 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles(Arrays.asList("USER"));
             userRepository.save(user);
-//            return true;
         } catch (Exception e) {
-            logger.error("Failed to save new user/ Dublicate User {} :", user.getUserName(), e);
-            throw new RuntimeException(e);
-//            return false;
+            logger.error("Failed to save new user/ Duplicate User {} : {}", user.getUserName(), e.getMessage(), e);
+            throw new RuntimeException("Failed to save new user: " + e.getMessage(), e);
         }
-
     }
 
     public void saveUser(User user)
