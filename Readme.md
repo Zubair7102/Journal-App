@@ -288,19 +288,280 @@ docker run -p 8081:8081 \
 
 ---
 
-## 📚 API Documentation (Swagger)
+## 📚 API Documentation (Swagger/OpenAPI 3)
 
-### **Accessing Swagger UI**
+The Journal App includes comprehensive API documentation powered by **Swagger/OpenAPI 3** with interactive testing capabilities and detailed schema documentation.
+
+### **🔗 Accessing Swagger UI**
+
+#### **Development Environment**
+- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+- **OpenAPI JSON**: `http://localhost:8080/api-docs`
+- **OpenAPI YAML**: `http://localhost:8080/api-docs.yaml`
+
+#### **Production Environment**
+- **Swagger UI**: `http://localhost:8081/swagger-ui.html`
+- **OpenAPI JSON**: `http://localhost:8081/api-docs`
+- **OpenAPI YAML**: `http://localhost:8081/api-docs.yaml`
+
+#### **Docker Environment**
 - **Development**: `http://localhost:8080/swagger-ui.html`
 - **Production**: `http://localhost:8081/swagger-ui.html`
-- **OpenAPI JSON**: `http://localhost:8080/api-docs`
 
-### **Features**
-- **Interactive API Testing**: Test endpoints directly from browser
-- **Request/Response Examples**: See example payloads for all endpoints
-- **JWT Authentication**: Built-in Bearer token support
-- **Schema Documentation**: Detailed models for all entities
-- **Response Codes**: Complete HTTP status code documentation
+### **✨ Swagger Features**
+
+#### **Interactive API Testing**
+- **Real-time Testing**: Execute API calls directly from the browser
+- **Request Builder**: Automatic request body generation
+- **Response Viewer**: Formatted JSON response display
+- **Error Handling**: Detailed error messages and status codes
+
+#### **Authentication Support**
+- **JWT Bearer Token**: Built-in authentication for protected endpoints
+- **Authorize Button**: Easy token management in Swagger UI
+- **Token Validation**: Automatic token format validation
+- **Security Schemes**: Proper OpenAPI 3 security definitions
+
+#### **Comprehensive Documentation**
+- **Endpoint Descriptions**: Detailed explanations for each API
+- **Request/Response Examples**: Sample payloads and responses
+- **Schema Documentation**: Complete data model definitions
+- **HTTP Status Codes**: All possible response codes documented
+- **Parameter Validation**: Input validation rules and constraints
+
+#### **Developer Experience**
+- **Code Generation**: Export client SDKs in multiple languages
+- **API Versioning**: Support for multiple API versions
+- **Search & Filter**: Easy endpoint discovery and filtering
+- **Responsive Design**: Works on desktop and mobile devices
+
+### **🔐 Using Swagger UI with Authentication**
+
+#### **Step 1: Access Swagger UI**
+1. Navigate to the Swagger UI URL for your environment
+2. You'll see the API documentation with all available endpoints
+
+#### **Step 2: Authenticate (for Protected Endpoints)**
+1. Click the **"Authorize"** button at the top of the page
+2. In the authorization dialog, enter your JWT token:
+   ```
+   Bearer your_jwt_token_here
+   ```
+3. Click **"Authorize"** to save the token
+4. Close the dialog
+
+#### **Step 3: Test Endpoints**
+1. **Expand** the endpoint you want to test
+2. Click **"Try it out"** button
+3. **Fill in** required parameters and request body
+4. Click **"Execute"** to make the API call
+5. **Review** the response and status code
+
+### **📋 API Endpoints Documentation**
+
+#### **Public Endpoints** (No Authentication Required)
+| Endpoint | Method | Description | Swagger Tag |
+|----------|--------|-------------|-------------|
+| `/public/health-check` | GET | Application health status | Public API |
+| `/public/signup` | POST | User registration | Public API |
+| `/public/login` | POST | User authentication | Public API |
+
+#### **Protected Endpoints** (JWT Authentication Required)
+| Endpoint | Method | Description | Swagger Tag |
+|----------|--------|-------------|-------------|
+| `/user` | PUT | Update user profile | User Management |
+| `/user` | DELETE | Delete user account | User Management |
+| `/user/greet` | GET | Weather-based greeting | User Management |
+| `/journal` | GET | Get user's journal entries | Journal Management |
+| `/journal` | POST | Create new journal entry | Journal Management |
+| `/journal/id/{id}` | GET | Get specific entry | Journal Management |
+| `/journal/id/{id}` | PUT | Update journal entry | Journal Management |
+| `/journal/id/{id}` | DELETE | Delete journal entry | Journal Management |
+
+#### **Admin Endpoints** (ADMIN Role Required)
+| Endpoint | Method | Description | Swagger Tag |
+|----------|--------|-------------|-------------|
+| `/admin/all-users` | GET | List all users | Admin Management |
+| `/admin/all-journals` | GET | List all journal entries | Admin Management |
+| `/admin/create-admin-user` | POST | Create admin user | Admin Management |
+| `/admin/clear-app-cache` | GET | Refresh application cache | Admin Management |
+
+### **📊 Data Models Documentation**
+
+#### **User Model**
+```json
+{
+  "id": "507f1f77bcf86cd799439011",
+  "userName": "john_doe",
+  "password": "encrypted_password",
+  "email": "john.doe@example.com",
+  "sentimentAnalysis": true,
+  "roles": ["USER"],
+  "journalEntries": []
+}
+```
+
+#### **Journal Entry Model**
+```json
+{
+  "id": "507f1f77bcf86cd799439012",
+  "title": "My Journal Entry",
+  "content": "Today was an amazing day...",
+  "date": "2024-01-15T10:30:00",
+  "sentiment": "HAPPY"
+}
+```
+
+#### **Weather Response Model**
+```json
+{
+  "location": {
+    "name": "New York",
+    "country": "United States of America",
+    "region": "New York"
+  },
+  "current": {
+    "temperature": 22,
+    "feelslike": 24,
+    "weather_descriptions": ["Partly cloudy"],
+    "humidity": 65
+  }
+}
+```
+
+### **🔧 Swagger Configuration**
+
+#### **OpenAPI Configuration** (`OpenApiConfig.java`)
+```java
+@Configuration
+public class OpenApiConfig {
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+            .info(new Info()
+                .title("Journal App API")
+                .description("A secure E2EE Journal Application API")
+                .version("1.0.0"))
+            .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
+            .components(new Components()
+                .addSecuritySchemes("Bearer Authentication", 
+                    new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")));
+    }
+}
+```
+
+#### **Application Properties**
+```properties
+# Swagger/OpenAPI Configuration
+springdoc.api-docs.path=/api-docs
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.swagger-ui.operationsSorter=method
+springdoc.swagger-ui.tagsSorter=alpha
+springdoc.swagger-ui.doc-expansion=none
+springdoc.swagger-ui.disable-swagger-default-url=true
+```
+
+### **🚀 Getting Started with Swagger**
+
+#### **Quick Start Guide**
+1. **Start the Application**
+   ```bash
+   # Development
+   ./mvnw spring-boot:run -Dspring.profiles.active=dev
+   
+   # Or with Docker
+   docker-compose up -d
+   ```
+
+2. **Access Swagger UI**
+   - Open browser and navigate to: `http://localhost:8080/swagger-ui.html`
+
+3. **Test Authentication**
+   - Use the `/public/signup` endpoint to create a user
+   - Use the `/public/login` endpoint to get a JWT token
+   - Click "Authorize" and enter: `Bearer your_token_here`
+
+4. **Test Protected Endpoints**
+   - Expand any protected endpoint
+   - Click "Try it out"
+   - Execute the request
+
+#### **Example API Testing Workflow**
+1. **Create User**: POST `/public/signup`
+   ```json
+   {
+     "userName": "testuser",
+     "password": "password123",
+     "email": "test@example.com",
+     "sentimentAnalysis": true
+   }
+   ```
+
+2. **Login**: POST `/public/login`
+   ```json
+   {
+     "userName": "testuser",
+     "password": "password123"
+   }
+   ```
+   - Copy the JWT token from the response
+
+3. **Authorize**: Click "Authorize" and enter `Bearer your_jwt_token`
+
+4. **Create Journal Entry**: POST `/journal`
+   ```json
+   {
+     "title": "My First Entry",
+     "content": "This is my first journal entry",
+     "sentiment": "HAPPY"
+   }
+   ```
+
+### **📱 Mobile and External Integration**
+
+#### **API Client Generation**
+Swagger UI provides code generation for various programming languages:
+- **JavaScript/TypeScript**: Axios, Fetch API
+- **Python**: Requests, urllib
+- **Java**: OkHttp, RestTemplate
+- **C#**: HttpClient
+- **PHP**: Guzzle, cURL
+
+#### **External Tools Integration**
+- **Postman**: Import OpenAPI specification
+- **Insomnia**: Direct API specification import
+- **VS Code**: REST Client extension
+- **IntelliJ IDEA**: HTTP Client
+
+### **🔍 Troubleshooting Swagger**
+
+#### **Common Issues**
+1. **Swagger UI Not Loading**
+   - Check if application is running
+   - Verify the correct port (8080 for dev, 8081 for prod)
+   - Check browser console for errors
+
+2. **Authentication Issues**
+   - Ensure JWT token is in correct format: `Bearer token_here`
+   - Check if token is expired
+   - Verify token was generated from `/public/login`
+
+3. **CORS Issues**
+   - Swagger UI is served from the same origin
+   - No CORS configuration needed for local development
+
+4. **Endpoint Not Found**
+   - Check if the endpoint is available in your profile (dev/prod)
+   - Verify the correct base URL
+
+#### **Security Considerations**
+- **Development**: Swagger UI is enabled for easy testing
+- **Production**: Consider disabling Swagger UI in production
+- **Authentication**: Always use HTTPS in production
+- **Token Security**: Never share JWT tokens publicly
 
 ---
 
