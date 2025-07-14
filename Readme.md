@@ -290,7 +290,7 @@ docker run -p 8081:8081 \
 
 ## 📚 API Documentation (Swagger/OpenAPI 3)
 
-The Journal App includes comprehensive API documentation powered by **Swagger/OpenAPI 3** with interactive testing capabilities and detailed schema documentation.
+The Journal App includes comprehensive API documentation powered by **Swagger/OpenAPI 3**.
 
 ### **🔗 Accessing Swagger UI**
 
@@ -307,55 +307,6 @@ The Journal App includes comprehensive API documentation powered by **Swagger/Op
 #### **Docker Environment**
 - **Development**: `http://localhost:8080/swagger-ui.html`
 - **Production**: `http://localhost:8081/swagger-ui.html`
-
-### **✨ Swagger Features**
-
-#### **Interactive API Testing**
-- **Real-time Testing**: Execute API calls directly from the browser
-- **Request Builder**: Automatic request body generation
-- **Response Viewer**: Formatted JSON response display
-- **Error Handling**: Detailed error messages and status codes
-
-#### **Authentication Support**
-- **JWT Bearer Token**: Built-in authentication for protected endpoints
-- **Authorize Button**: Easy token management in Swagger UI
-- **Token Validation**: Automatic token format validation
-- **Security Schemes**: Proper OpenAPI 3 security definitions
-
-#### **Comprehensive Documentation**
-- **Endpoint Descriptions**: Detailed explanations for each API
-- **Request/Response Examples**: Sample payloads and responses
-- **Schema Documentation**: Complete data model definitions
-- **HTTP Status Codes**: All possible response codes documented
-- **Parameter Validation**: Input validation rules and constraints
-
-#### **Developer Experience**
-- **Code Generation**: Export client SDKs in multiple languages
-- **API Versioning**: Support for multiple API versions
-- **Search & Filter**: Easy endpoint discovery and filtering
-- **Responsive Design**: Works on desktop and mobile devices
-
-### **🔐 Using Swagger UI with Authentication**
-
-#### **Step 1: Access Swagger UI**
-1. Navigate to the Swagger UI URL for your environment
-2. You'll see the API documentation with all available endpoints
-
-#### **Step 2: Authenticate (for Protected Endpoints)**
-1. Click the **"Authorize"** button at the top of the page
-2. In the authorization dialog, enter your JWT token:
-   ```
-   Bearer your_jwt_token_here
-   ```
-3. Click **"Authorize"** to save the token
-4. Close the dialog
-
-#### **Step 3: Test Endpoints**
-1. **Expand** the endpoint you want to test
-2. Click **"Try it out"** button
-3. **Fill in** required parameters and request body
-4. Click **"Execute"** to make the API call
-5. **Review** the response and status code
 
 ### **📋 API Endpoints Documentation**
 
@@ -429,41 +380,6 @@ The Journal App includes comprehensive API documentation powered by **Swagger/Op
 }
 ```
 
-### **🔧 Swagger Configuration**
-
-#### **OpenAPI Configuration** (`OpenApiConfig.java`)
-```java
-@Configuration
-public class OpenApiConfig {
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-            .info(new Info()
-                .title("Journal App API")
-                .description("A secure E2EE Journal Application API")
-                .version("1.0.0"))
-            .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
-            .components(new Components()
-                .addSecuritySchemes("Bearer Authentication", 
-                    new SecurityScheme()
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT")));
-    }
-}
-```
-
-#### **Application Properties**
-```properties
-# Swagger/OpenAPI Configuration
-springdoc.api-docs.path=/api-docs
-springdoc.swagger-ui.path=/swagger-ui.html
-springdoc.swagger-ui.operationsSorter=method
-springdoc.swagger-ui.tagsSorter=alpha
-springdoc.swagger-ui.doc-expansion=none
-springdoc.swagger-ui.disable-swagger-default-url=true
-```
-
 ### **🚀 Getting Started with Swagger**
 
 #### **Quick Start Guide**
@@ -519,53 +435,6 @@ springdoc.swagger-ui.disable-swagger-default-url=true
      "sentiment": "HAPPY"
    }
    ```
-
-### **📱 Mobile and External Integration**
-
-#### **API Client Generation**
-Swagger UI provides code generation for various programming languages:
-- **JavaScript/TypeScript**: Axios, Fetch API
-- **Python**: Requests, urllib
-- **Java**: OkHttp, RestTemplate
-- **C#**: HttpClient
-- **PHP**: Guzzle, cURL
-
-#### **External Tools Integration**
-- **Postman**: Import OpenAPI specification
-- **Insomnia**: Direct API specification import
-- **VS Code**: REST Client extension
-- **IntelliJ IDEA**: HTTP Client
-
-### **🔍 Troubleshooting Swagger**
-
-#### **Common Issues**
-1. **Swagger UI Not Loading**
-   - Check if application is running
-   - Verify the correct port (8080 for dev, 8081 for prod)
-   - Check browser console for errors
-
-2. **Authentication Issues**
-   - Ensure JWT token is in correct format: `Bearer token_here`
-   - Check if token is expired
-   - Verify token was generated from `/public/login`
-
-3. **CORS Issues**
-   - Swagger UI is served from the same origin
-   - No CORS configuration needed for local development
-
-4. **Endpoint Not Found**
-   - Check if the endpoint is available in your profile (dev/prod)
-   - Verify the correct base URL
-
-#### **Security Considerations**
-- **Development**: Swagger UI is enabled for easy testing
-- **Production**: Consider disabling Swagger UI in production
-- **Authentication**: Always use HTTPS in production
-- **Token Security**: Never share JWT tokens publicly
-
----
-
-## 🔒 Security Implementation
 
 ### **JWT Authentication Flow**
 1. **Login**: User provides credentials → JWT token generated
