@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class OpenApiConfig {
+public class SwaggerConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -21,18 +21,16 @@ public class OpenApiConfig {
                         .description("A secure E2EE Journal Application API with user authentication and journal entry management")
                         .version("1.0.0")
                         .contact(new Contact()
-                                .name("Journal App Team")
-                                .email("support@journalapp.com")
-                                .url("https://journalapp.com"))
-                        .license(new License()
-                                .name("MIT License")
-                                .url("https://opensource.org/licenses/MIT")))
+                                .name("Zubair")
+                                .email("jubaira646@gmail.com")))
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new Components()
-                        .addSecuritySchemes("Bearer Authentication", new SecurityScheme()
+                        .addSecuritySchemes("bearerAuth", new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")
                                 .description("Enter JWT token")));
+
+
     }
 } 

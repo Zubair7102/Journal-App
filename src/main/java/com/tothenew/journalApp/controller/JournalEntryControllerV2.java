@@ -4,6 +4,8 @@ import com.tothenew.journalApp.entity.JournalEntry;
 import com.tothenew.journalApp.entity.User;
 import com.tothenew.journalApp.service.JournalEntryService;
 import com.tothenew.journalApp.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.HTML;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/journal")
+@Tag(name = "Journal entry APIs", description = "Create, Read, Update and Delete")
 public class JournalEntryControllerV2 {
 
     @Autowired
@@ -30,6 +34,7 @@ public class JournalEntryControllerV2 {
 
 //    method to get all entries of a user
     @GetMapping
+    @Operation(summary = "Get all journal entries of a user")
     public ResponseEntity<List<JournalEntry>> getAllJournalEntriesOfUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();

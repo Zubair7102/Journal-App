@@ -4,6 +4,7 @@ import com.tothenew.journalApp.entity.User;
 import com.tothenew.journalApp.repository.UserRepository;
 import com.tothenew.journalApp.service.UserService;
 import com.tothenew.journalApp.service.WeatherService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 /* Controllers are special type of classes or components that handle http requests */
 @RestController /* @RestController: This tells Spring Boot that this class will handle HTTP requests and return data in JSON format. */
 @RequestMapping("/user")
+@Tag(name = "User APIs", description = "Read, Update & Delete User") // used to write custom api name is swagger
 @Slf4j
 public class UserController {
 

@@ -22,9 +22,8 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/public")
-@Tag(name = "Public API", description = "Public endpoints for authentication and health check")
+@Tag(name = "Public API", description = "Public endpoints for authentication (Signup & Login) and health check")
 public class PublicController {
-
     @Autowired
     private UserService userService;
 

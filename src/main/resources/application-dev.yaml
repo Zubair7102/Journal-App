@@ -4,11 +4,22 @@ spring:
       uri: mongodb+srv://kaisilious:***REDACTED***@journal.gnjq81h.mongodb.net/?retryWrites=true&w=majority&appName=Journal
       database: journaldb
       auto-index-creation: true
-
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: your_client_id
+            client-secret: your_client_secret
 
 server:
-  port: 8080
+  port: 8081
 #  servlet:
 #    context-path: /journal
+
+app:
+  oauth:
+    google:
+      redirect-uri: http://localhost:8081/auth/google/callback
 
 
