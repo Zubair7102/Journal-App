@@ -255,6 +255,8 @@ docker run -p 8081:8081 \
 | `GET` | `/public/health-check` | Application health status | - | `"OK"` |
 | `POST` | `/public/signup` | User registration | `User` object | JWT token or error |
 | `POST` | `/public/login` | User authentication | `User` credentials | JWT token or error |
+| `GET` | `/auth/google/url` | Get Google OAuth consent URL (sets state cookie) | - | `{ "url": "https://accounts.google.com/..." }` |
+| `GET` | `/auth/google/callback` | Google OAuth callback (validates state, issues JWT) | - | `{ "token": "...", "username": "..." }` |
 
 ### **User Endpoints** (JWT Authentication Required)
 | Method | Endpoint | Description | Request Body | Response |
@@ -479,6 +481,29 @@ Authorization: Bearer <jwt_token>
 ```
 
 ---
+
+## 🔐 Google OAuth Setup (Complete Flow)
+
+### **1) Create Google OAuth credentials**
+- In Google Cloud Console, create an OAuth 2.0 Client ID.
+- Add an **Authorized redirect URI** matching your backend callback, for example:
+  - `http://localhost:8081/auth/google/callback`
+
+### **2) Configure environment variables**
+Set these before running the app:
+
+```bash
+export GOOGLE_CLIENT_ID="your-google-client-id"
+export GOOGLE_CLIENT_SECRET="your-google-client-secret"
+export GOOGLE_OAUTH_REDIRECT_URI="http://localhost:8081/auth/google/callback"
+# Optional: if you want backend to redirect to frontend after login
+export GOOGLE_OAUTH_FRONTEND_REDIRECT_URI="http://localhost:3000/auth/callback"
+```
+
+### **3) Test the flow**
+1. Call `GET /auth/google/url` and open the returned `url` in a browser.
+2. After Google login, you’ll be redirected to `/auth/google/callback?...`.
+3. The response will contain your app JWT (or it will redirect to your frontend if `GOOGLE_OAUTH_FRONTEND_REDIRECT_URI` is set).
 
 ## ⏰ Scheduled Jobs
 

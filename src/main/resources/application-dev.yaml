@@ -9,8 +9,8 @@ spring:
       client:
         registration:
           google:
-            client-id: your_client_id
-            client-secret: your_client_secret
+            client-id: ${GOOGLE_CLIENT_ID:}
+            client-secret: ${GOOGLE_CLIENT_SECRET:}
 
 server:
   port: 8081
@@ -21,5 +21,6 @@ app:
   oauth:
     google:
       redirect-uri: http://localhost:8081/auth/google/callback
+      frontend-redirect-uri: ${GOOGLE_OAUTH_FRONTEND_REDIRECT_URI:}
 
 
