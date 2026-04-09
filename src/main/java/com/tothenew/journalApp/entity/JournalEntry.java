@@ -1,5 +1,7 @@
 package com.tothenew.journalApp.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.tothenew.journalApp.enums.Sentiment;
 import lombok.*;
 import org.bson.types.ObjectId;
@@ -17,6 +19,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class JournalEntry {
     @Id
+    @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
 
 

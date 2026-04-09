@@ -1,5 +1,7 @@
 package com.tothenew.journalApp.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.bson.types.ObjectId;
@@ -20,6 +22,7 @@ import java.util.List;
 public class User {
 
     @Id 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "Unique identifier for the user", example = "507f1f77bcf86cd799439011")
     private ObjectId id;
 

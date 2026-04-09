@@ -14,9 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -28,13 +27,13 @@ public class PublicController {
     private UserService userService;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/health-check")
     @Operation(summary = "Health Check", description = "Check if the API is running")
@@ -74,8 +73,11 @@ public class PublicController {
     public ResponseEntity<String> login(@RequestBody User user) throws Exception
     {
         try{
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
-            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
+            User userInDb = userService.findByUserName(user.getUserName());
+            if (userInDb == null || !passwordEncoder.matches(user.getPassword(), userInDb.getPassword())) {
+                return new ResponseEntity<>("Incorrect username or password", HttpStatus.BAD_REQUEST);
+            }
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userInDb.getUserName());
             String jwt = jwtUtil.generateToken(userDetails.getUsername());
             return new ResponseEntity<>(jwt, HttpStatus.OK);
         }

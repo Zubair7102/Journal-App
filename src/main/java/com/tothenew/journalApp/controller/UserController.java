@@ -6,12 +6,12 @@ import com.tothenew.journalApp.service.UserService;
 import com.tothenew.journalApp.service.WeatherService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 //Controller --> Service --> Controller
@@ -30,6 +30,9 @@ public class UserController {
 
     @Autowired
     private WeatherService weatherService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
 //    method to get all the Users
@@ -54,7 +57,7 @@ public class UserController {
             String userName = authentication.getName();
             User userInDb = userService.findByUserName(userName);
             userInDb.setUserName(user.getUserName());
-            userInDb.setPassword(user.getPassword());
+            userInDb.setPassword(passwordEncoder.encode(user.getPassword()));
             userService.saveUser(userInDb);
             return new ResponseEntity<>(userInDb, HttpStatus.OK);
         } catch (Exception e) {
@@ -67,12 +70,11 @@ public class UserController {
 
 //    Method to delete a user
     @DeleteMapping
-    public ResponseEntity<User> deleteUserById(@PathVariable ObjectId userId)
+    public ResponseEntity<User> deleteUser()
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userRepository.deleteByUserName(authentication.getName());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        return true;
     }
 
     @GetMapping("/greet")
