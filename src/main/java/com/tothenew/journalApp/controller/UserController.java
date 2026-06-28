@@ -14,6 +14,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 //Controller --> Service --> Controller
 /* Controllers are special type of classes or components that handle http requests */
 @RestController /* @RestController: This tells Spring Boot that this class will handle HTTP requests and return data in JSON format. */
@@ -34,6 +37,20 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, Object>> getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findByUserName(authentication.getName());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("userName", user.getUserName());
+        profile.put("email", user.getEmail());
+        profile.put("roles", user.getRoles());
+        profile.put("sentimentAnalysis", user.getSentimentAnalysis());
+        return new ResponseEntity<>(profile, HttpStatus.OK);
+    }
 
 //    method to get all the Users
 //    @GetMapping

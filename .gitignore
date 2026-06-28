@@ -39,6 +39,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Frontend ###
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
 /src/main/resources/application.yml
 /src/main/resources/application.yaml
 /target/
