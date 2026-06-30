@@ -1,57 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Alert, Box, CircularProgress, Typography } from '@mui/material';
 import { setStoredAuth } from '../api/client';
 import { fetchCurrentUser } from '../api/user.api';
 
 const OAuthCallbackPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [error, setError] = useState('');
 
   useEffect(() => {
     const token = searchParams.get('token');
     const username = searchParams.get('username');
 
-    const completeLogin = async () => {
-      if (!token || !username) {
-        setError('OAuth login failed. Missing token or username.');
-        return;
-      }
-
+    const complete = async () => {
+      if (!token || !username) return;
       setStoredAuth(token, username);
       try {
         await fetchCurrentUser();
         navigate('/app/dashboard', { replace: true });
       } catch {
-        setError('OAuth login succeeded but profile could not be loaded.');
+        navigate('/login', { replace: true });
       }
     };
-
-    void completeLogin();
+    void complete();
   }, [navigate, searchParams]);
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 2,
-        p: 2,
-      }}
-    >
-      {error ? (
-        <Alert severity="error">{error}</Alert>
-      ) : (
-        <>
-          <CircularProgress />
-          <Typography>Completing Google sign-in...</Typography>
-        </>
-      )}
-    </Box>
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="h-10 w-10 animate-spin rounded-full border-2 border-[var(--color-accent)] border-t-transparent" />
+    </div>
   );
 };
 

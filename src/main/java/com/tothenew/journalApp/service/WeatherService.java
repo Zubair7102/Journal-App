@@ -28,21 +28,29 @@ public class WeatherService {
 
     public WeatherResponse getWeather(String city)
     {
-    WeatherResponse weatherResponse =  redisService.get("weather_of_" + city, WeatherResponse.class);
-    if(weatherResponse != null)
-    {
-        return weatherResponse;
-    }
-    else {
-        String finalAPI = appCache.appCache.get(AppCache.keys.WEATHER_API.toString()).replace(PlaceHolders.CITY, city).replace(PlaceHolders.API_KEY, apiKey);
-        ResponseEntity<WeatherResponse> response =  restTemplate.exchange(finalAPI, HttpMethod.GET, null, WeatherResponse.class);
+        WeatherResponse weatherResponse = redisService.get("weather_of_" + city, WeatherResponse.class);
+        if (weatherResponse != null) {
+            return weatherResponse;
+        }
+
+        String apiTemplate = appCache.appCache.get(AppCache.keys.WEATHER_API.toString());
+        if (apiTemplate == null || apiTemplate.isBlank()) {
+            throw new IllegalStateException("WEATHER_API config is missing. Seed config_journal_app in MongoDB.");
+        }
+        if (apiKey == null || apiKey.isBlank()) {
+            throw new IllegalStateException("weather.api.key is not configured");
+        }
+
+        String finalAPI = apiTemplate
+                .replace(PlaceHolders.CITY, city)
+                .replace(PlaceHolders.API_KEY, apiKey);
+        ResponseEntity<WeatherResponse> response = restTemplate.exchange(
+                finalAPI, HttpMethod.GET, null, WeatherResponse.class);
         WeatherResponse body = response.getBody();
-        if(body != null)
-        {
+        if (body != null) {
             redisService.set("weather_of_" + city, body, 300L);
         }
         return body;
-    }
     }
 
 }

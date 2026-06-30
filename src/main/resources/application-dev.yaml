@@ -18,9 +18,15 @@ server:
 #    context-path: /journal
 
 app:
+  cors:
+    allowed-origins: http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173
   oauth:
     google:
       redirect-uri: http://localhost:8081/auth/google/callback
       frontend-redirect-uri: ${GOOGLE_OAUTH_FRONTEND_REDIRECT_URI:}
+
+weather:
+  api:
+    key: ${WEATHER_API_KEY:}
 
 

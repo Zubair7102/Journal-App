@@ -1,11 +1,32 @@
 # Journal App Frontend
 
-React + TypeScript + Material UI client for the Journal App Spring Boot backend.
+Premium React UI for the Journal App Spring Boot backend.
 
-## Prerequisites
+## Stack
 
-- Node.js 20+
-- Backend running on `http://localhost:8081` with `dev` profile
+- **React 19** + **TypeScript** + **Vite**
+- **Tailwind CSS v4** — design system, light/dark themes
+- **Framer Motion** — animations
+- **Lucide React** — icons
+- **TanStack Query** — server state
+- **Sonner** — toast notifications
+- **cmdk** — command palette (⌘K)
+
+## Features
+
+- Dashboard with stats, mood tracker, recent activity
+- Journal cards with hover animations, favorites, tags, categories
+- Rich editor with markdown toolbar, live preview, mood, tags, focus & fullscreen modes
+- Google OAuth sign-in (when backend credentials are configured)
+- Dedicated logout button in sidebar, header, and settings
+- Scroll progress bar and back-to-top button
+- Code-split routes for faster initial load
+- Search, filter, and sort journals
+- Favorites, trash (soft delete), calendar view
+- Dark/light theme with localStorage persistence
+- Settings (profile, theme, export metadata)
+- Admin users table (ADMIN role)
+- Command palette navigation
 
 ## Setup
 
@@ -16,32 +37,21 @@ cp .env.example .env
 npm run dev
 ```
 
-Open http://localhost:5173
+- Frontend: http://localhost:5173
+- API proxy: `/api` → http://localhost:8081
 
-The Vite dev server proxies `/api` to the backend (`vite.config.ts`).
+Ensure the backend runs with `dev` profile.
 
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start development server |
+| `npm run dev` | Development server |
 | `npm run build` | Production build |
 | `npm run preview` | Preview production build |
 
-## Environment
+## Notes
 
-| Variable | Description |
-|----------|-------------|
-| `VITE_API_BASE_URL` | API base URL (default `/api` for local proxy) |
-
-For production, set `VITE_API_BASE_URL` to your deployed API URL and configure backend CORS.
-
-## Features (Phase 1)
-
-- Login / signup
-- JWT session storage
-- Dashboard with weather greeting
-- Journal list, create, edit, delete
-- Profile update and account deletion
-- Admin users table (ADMIN role)
-- OAuth callback route (`/oauth/callback`)
+- **Favorites, tags, trash, categories** are stored in browser `localStorage` (backend unchanged).
+- **Mood** maps to backend `sentiment` when supported (`HAPPY`, `SAD`, `ANGRY`, `ANXIOUS`).
+- **Weather greet** requires backend `WEATHER_API_KEY` and MongoDB config.

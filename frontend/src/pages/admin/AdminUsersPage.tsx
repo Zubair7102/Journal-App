@@ -1,18 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import {
-  Alert,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from '@mui/material';
 import { apiClient } from '../../api/client';
 import type { UserProfile } from '../../types/user';
-import LoadingScreen from '../../components/common/LoadingScreen';
+import { JournalCardSkeleton } from '../../components/ui/Skeleton';
 
 interface AdminUser extends UserProfile {
   id?: string;
@@ -29,37 +18,33 @@ const AdminUsersPage = () => {
     queryFn: fetchAllUsers,
   });
 
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
+  if (isLoading) return <JournalCardSkeleton />;
 
   return (
-    <>
-      <Typography variant="h4" gutterBottom>
-        All users
-      </Typography>
-      {isError && <Alert severity="error">Failed to load users.</Alert>}
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Username</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Roles</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold">All users</h1>
+      {isError && <p className="text-rose-500">Failed to load users.</p>}
+      <div className="overflow-hidden rounded-2xl border border-[var(--color-border)]">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-[var(--color-surface-muted)] text-[var(--color-text-muted)]">
+            <tr>
+              <th className="px-4 py-3">Username</th>
+              <th className="px-4 py-3">Email</th>
+              <th className="px-4 py-3">Roles</th>
+            </tr>
+          </thead>
+          <tbody>
             {(data ?? []).map((user) => (
-              <TableRow key={user.userName}>
-                <TableCell>{user.userName}</TableCell>
-                <TableCell>{user.email ?? '-'}</TableCell>
-                <TableCell>{user.roles?.join(', ') ?? 'USER'}</TableCell>
-              </TableRow>
+              <tr key={user.userName} className="border-t border-[var(--color-border)]">
+                <td className="px-4 py-3">{user.userName}</td>
+                <td className="px-4 py-3">{user.email ?? '—'}</td>
+                <td className="px-4 py-3">{user.roles?.join(', ') ?? 'USER'}</td>
+              </tr>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 };
 

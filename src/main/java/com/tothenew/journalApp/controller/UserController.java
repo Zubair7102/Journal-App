@@ -97,22 +97,18 @@ public class UserController {
     @GetMapping("/greet")
     public ResponseEntity<?> greeting(@RequestParam String cityName)
     {
-        try{
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        try {
             WeatherResponse weatherResponse = weatherService.getWeather(cityName);
-            String greeting = "";
-            if(weatherResponse != null)
-            {
-                greeting = "Weather feels like "+ weatherResponse.getCurrent().getFeelslike();
+            if (weatherResponse != null && weatherResponse.getCurrent() != null) {
+                String greeting = "Weather feels like " + weatherResponse.getCurrent().getFeelslike();
+                return new ResponseEntity<>("Hi " + userName + " " + greeting, HttpStatus.OK);
             }
-            return new ResponseEntity<>("Hi " + authentication.getName() + " " + greeting, HttpStatus.OK);
+        } catch (Exception e) {
+            log.warn("Weather greeting unavailable for city {}: {}", cityName, e.getMessage());
         }
-        catch (Exception e)
-        {
-            log.error("Sorry! the provided credentials are wrong", e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
+        return new ResponseEntity<>("Hi " + userName, HttpStatus.OK);
     }
 
 
